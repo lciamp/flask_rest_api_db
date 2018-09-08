@@ -100,13 +100,16 @@ class Item(Resource):
         return updated_item, 200
 
     def delete(self, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+        try:
+            connection = sqlite3.connect('data.db')
+            cursor = connection.cursor()
 
-        query = "DELETE FROM items WHERE name=?"
-        cursor.execute(query, (name,))
+            query = "DELETE FROM items WHERE name=?"
+            cursor.execute(query, (name,))
 
-        connection.commit()
-        connection.close()
+            connection.commit()
+            connection.close()
+        except:
+            abort(500)
 
         return {'message': "Item '{}' deleted.".format(name)}, 202
