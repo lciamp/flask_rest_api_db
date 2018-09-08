@@ -87,6 +87,7 @@ class Item(Resource):
     def put(self, name):
         data = Item.parser.parse_args()
         item = self.find_by_name(name)
+        print(item, "in put")
 
         updated_item = {'name': name, 'price': data['price']}
         if item is None:
