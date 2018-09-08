@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse
+from flask import abort
 from flask_jwt import jwt_required
 import sqlite3
 from decorators import db_check_or_return_500
@@ -6,13 +7,17 @@ from decorators import db_check_or_return_500
 
 class ItemList(Resource):
     def get(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-        query ="SELECT * FROM items"
-        result =  cursor.execute(query)
-        rows = result.fetchall()
-        items = [{'name': row[0], 'price': row[1]} for row in rows]
-        return items
+        try:
+            connection = sqlite3.connect('data.db')
+            cursor = connection.cursor()
+            query ="SELECT * FROM items"
+            result = cursor.execute(query)
+            rows = result.fetchall()
+            items = [{'name': row[0], 'price': row[1]} for row in rows]
+            connection.close()
+        except:
+            abort(500)
+        return {'items': items}, 200
 
 
 class Item(Resource):
@@ -60,8 +65,7 @@ class Item(Resource):
         connection.commit()
         connection.close()
 
-
-    #@jwt_required()
+    # @jwt_required()
     def get(self, name):
         item = self.find_by_name(name)
 
@@ -87,7 +91,6 @@ class Item(Resource):
     def put(self, name):
         data = Item.parser.parse_args()
         item = self.find_by_name(name)
-        print(item, "in put")
 
         updated_item = {'name': name, 'price': data['price']}
         if item is None:
