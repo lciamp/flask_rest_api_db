@@ -12,7 +12,7 @@ create_items_table = "CREATE TABLE IF NOT EXISTS items (name text, price real)"
 cursor.execute(create_items_table)
 print('items table created.')
 
-cursor.execute("INSERT INTO items VALUES ('test', 10.99)")
+#cursor.execute("INSERT INTO items VALUES ('test', 10.99)")
 
 
 connection.commit()
